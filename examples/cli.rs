@@ -1,6 +1,6 @@
 extern crate argon2rs;
 
-use argon2rs::{Argon2, Variant};
+use argon2rs::sse2arg::{Argon2, Variant};
 use std::string::String;
 use std::env;
 
