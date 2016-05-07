@@ -13,7 +13,7 @@ pub enum Variant {
     Argon2i = 1,
 }
 
-const ARGON2_VERSION: u32 = 0x10;
+const ARGON2_VERSION: u32 = 0x13;
 const DEF_B2HASH_LEN: usize = 64;
 const SLICES_PER_LANE: u32 = 4;
 
@@ -391,6 +391,7 @@ impl Gen2i {
 
 // g x y = let r = x `xor` y in p_col (p_row r) `xor` r,
 fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
+    let old = *dest;
     for (d, (l, r)) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
         *d = *l ^ *r;
     }
@@ -403,8 +404,8 @@ fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
         p_col(col, dest);
     }
 
-    for (d, (l, r)) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
-        *d = *d ^ *l ^ *r;
+    for (d, (l, (r, ol))) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter().zip(old.iter()))) {
+        *d = *d ^ *l ^ *r ^ *ol;
     }
 }
 
