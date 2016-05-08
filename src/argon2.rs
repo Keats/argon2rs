@@ -280,9 +280,7 @@ impl Argon2 {
 
         let mut new: Block = unsafe { mem::uninitialized() };
         g(&mut new, rd, refblk);
-        for (dest, n) in wr.iter_mut().zip(new.iter()) {
-            *dest = *dest ^ *n;
-        }
+        *wr ^= &new;
     }
 
     fn prev(&self, n: u32) -> u32 {
