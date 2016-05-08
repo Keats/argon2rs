@@ -13,6 +13,14 @@ macro_rules! per_kib {
 
 pub struct Block([u64x2; per_kib!(u64x2)]);
 
+impl Clone for Block {
+    #[inline(always)]
+    fn clone(&self) -> Self {
+        let inner = self.0;
+        Block(inner)
+    }
+}
+
 impl<'a> BitXorAssign<&'a Block> for Block {
     #[inline(always)]
     fn bitxor_assign(&mut self, rhs: &Block) {
