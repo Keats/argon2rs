@@ -277,7 +277,12 @@ impl Argon2 {
         let cur = (lane, slice * slicelen + idx);
         let pre = (lane, self.prev(cur.1));
         let (wr, rd, refblk) = blks.get3(cur, pre, zth);
-        g(wr, rd, refblk);
+
+        let mut new: Block = unsafe { mem::uninitialized() };
+        g(&mut new, rd, refblk);
+        for (dest, n) in wr.iter_mut().zip(new.iter()) {
+            *dest = *dest ^ *n;
+        }
     }
 
     fn prev(&self, n: u32) -> u32 {
@@ -391,7 +396,6 @@ impl Gen2i {
 
 // g x y = let r = x `xor` y in p_col (p_row r) `xor` r,
 fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
-    let old = *dest;
     for (d, (l, r)) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
         *d = *l ^ *r;
     }
@@ -404,8 +408,8 @@ fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
         p_col(col, dest);
     }
 
-    for (d, (l, (r, ol))) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter().zip(old.iter()))) {
-        *d = *d ^ *l ^ *r ^ *ol;
+    for (d, (l, r)) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
+        *d = *d ^ *l ^ *r;
     }
 }
 
@@ -492,7 +496,7 @@ fn p_col(col: usize, b: &mut Block) {
 mod tests {
     use std::fs::File;
     use std::io::Read;
-    use super::{Argon2,ARGON2_VERSION};
+    use super::{ARGON2_VERSION, Argon2};
     use block;
     use std::fmt::Write;
 
