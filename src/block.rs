@@ -40,6 +40,16 @@ impl IndexMut<usize> for Block {
     }
 }
 
+impl Block {
+    pub fn iter_mut(&mut self) -> IterMut<u64x2> {
+        self.0.iter_mut()
+    }
+
+    pub fn iter(&self) -> Iter<u64x2> {
+        self.0.iter()
+    }
+}
+
 pub fn zero() -> Block { Block([u64x2(0, 0); per_kib!(u64x2)]) }
 
 pub fn as_u8_mut(b: &mut Block) -> &mut [u8] {
