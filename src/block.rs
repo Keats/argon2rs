@@ -29,25 +29,17 @@ impl<'a, 'b> BitXor<&'a Block> for &'b Block {
 
 impl Index<usize> for Block {
     type Output = u64x2;
-    fn index(&self, idx: usize) -> &Self::Output {
-        &self.0[idx]
-    }
+    fn index(&self, idx: usize) -> &Self::Output { &self.0[idx] }
 }
 
 impl IndexMut<usize> for Block {
-    fn index_mut(&mut self, idx: usize) -> &mut u64x2 {
-        &mut self.0[idx]
-    }
+    fn index_mut(&mut self, idx: usize) -> &mut u64x2 { &mut self.0[idx] }
 }
 
 impl Block {
-    pub fn iter_mut(&mut self) -> IterMut<u64x2> {
-        self.0.iter_mut()
-    }
+    pub fn iter_mut(&mut self) -> IterMut<u64x2> { self.0.iter_mut() }
 
-    pub fn iter(&self) -> Iter<u64x2> {
-        self.0.iter()
-    }
+    pub fn iter(&self) -> Iter<u64x2> { self.0.iter() }
 }
 
 pub fn zero() -> Block { Block([u64x2(0, 0); per_kib!(u64x2)]) }
