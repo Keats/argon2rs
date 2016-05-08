@@ -1,5 +1,5 @@
 use octword::u64x2;
-use std::ops::{Index, IndexMut};
+use std::ops::{BitXor, Index, IndexMut};
 use std::mem;
 use std::slice::Iter;
 
@@ -12,6 +12,20 @@ macro_rules! per_kib {
 }
 
 pub struct Block([u64x2; per_kib!(u64x2)]);
+
+impl<'a, 'b> BitXor<&'a Block> for &'b Block {
+    type Output = Block;
+    #[inline(always)]
+    fn bitxor(self, rhs: &'a Block) -> Self::Output {
+        let mut rv: Block = unsafe { mem::uninitialized() };
+        for (dest, (l, r)) in rv.0
+            .iter_mut()
+            .zip(self.0.iter().zip(rhs.0.iter())) {
+            *dest = *l ^ *r;
+        }
+        rv
+    }
+}
 
 pub fn zero() -> Block { Block([u64x2(0, 0); per_kib!(u64x2)]) }
 
