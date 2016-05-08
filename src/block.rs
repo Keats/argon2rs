@@ -1,7 +1,7 @@
 use octword::u64x2;
 use std::ops::{BitXor, Index, IndexMut};
 use std::mem;
-use std::slice::Iter;
+use std::slice::{Iter, IterMut};
 
 pub const ARGON2_BLOCK_BYTES: usize = 1024;
 
@@ -31,6 +31,13 @@ impl Index<usize> for Block {
     type Output = u64x2;
     fn index(&self, idx: usize) -> &Self::Output {
         self.0[idx]
+        &self.0[idx]
+    }
+}
+
+impl IndexMut<usize> for Block {
+    fn index_mut(&mut self, idx: usize) -> &mut u64x2 {
+        &mut self.0[idx]
     }
 }
 
