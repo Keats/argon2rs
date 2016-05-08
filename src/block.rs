@@ -28,7 +28,8 @@ impl<'a, 'b> BitXor<&'a Block> for &'b Block {
 }
 
 impl Index<usize> for Block {
-    fn index(&self, idx: usize) -> &u64x2 {
+    type Output = u64x2;
+    fn index(&self, idx: usize) -> &Self::Output {
         &self.0[idx]
     }
 }
