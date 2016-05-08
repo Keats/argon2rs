@@ -1,5 +1,5 @@
 use octword::u64x2;
-use std::ops::{Index, IndexMut};
+use std::ops::{BitXorAssign, Index, IndexMut};
 use std::mem;
 use std::slice::{Iter, IterMut};
 
@@ -12,6 +12,25 @@ macro_rules! per_kib {
 }
 
 pub struct Block([u64x2; per_kib!(u64x2)]);
+
+impl<'a> BitXorAssign<&'a Block> for Block {
+    #[inline(always)]
+    fn bitxor_assign(&mut self, rhs: &Block) {
+        for (d, r) in self.0.iter_mut().zip(rhs.0.iter()) {
+            *d = *d ^ *r;
+        }
+    }
+}
+
+impl<'a, 'b> BitXorAssign<(&'a Block, &'b Block)> for Block {
+    #[inline(always)]
+    fn bitxor_assign(&mut self, rhs: (&'a Block, &'b Block)) {
+        let (lhs, rhs) = ((rhs.0).0, (rhs.1).0);
+        for (d, (l, r)) in self.0.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
+            *d = *d ^ *l ^ *r;
+        }
+    }
+}
 
 impl Index<usize> for Block {
     type Output = u64x2;
