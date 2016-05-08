@@ -32,7 +32,7 @@ fn split_u64(n: u64) -> (u32, u32) {
 fn xor_all(blocks: &Vec<&Block>) -> Block {
     let mut rv: Block = block::zero();
     for (idx, d) in rv.iter_mut().enumerate() {
-        *d = blocks.iter().fold(*d, |n, &&blk| n ^ blk[idx]);
+        *d = blocks.iter().fold(*d, |n, ref blk| n ^ blk[idx]);
     }
     rv
 }
