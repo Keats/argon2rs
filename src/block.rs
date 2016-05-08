@@ -27,6 +27,13 @@ impl<'a, 'b> BitXor<&'a Block> for &'b Block {
     }
 }
 
+impl Index<usize> for Block {
+    type Output = u64x2;
+    fn index(&self, idx: usize) -> &Self::Output {
+        self.0[idx]
+    }
+}
+
 pub fn zero() -> Block { Block([u64x2(0, 0); per_kib!(u64x2)]) }
 
 pub fn as_u8_mut(b: &mut Block) -> &mut [u8] {
