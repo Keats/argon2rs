@@ -408,9 +408,7 @@ fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
         p_col(col, dest);
     }
 
-    for (d, (l, r)) in dest.iter_mut().zip(lhs.iter().zip(rhs.iter())) {
-        *d = *d ^ *l ^ *r;
-    }
+    *dest ^= (lhs, rhs);
 }
 
 /// ``` g2 y = let g' y = g 0 y in g' . g' ```
@@ -425,9 +423,7 @@ fn g_two(dest: &mut Block, src: &Block) {
         p_col(col, dest);
     }
 
-    for (d, s) in dest.iter_mut().zip(src.iter()) {
-        *d = *d ^ *s;
-    }
+    *dest ^= src;
 
     let tmp: Block = dest.clone();
 
@@ -438,9 +434,7 @@ fn g_two(dest: &mut Block, src: &Block) {
         p_col(col, dest);
     }
 
-    for (d, s) in dest.iter_mut().zip(tmp.iter()) {
-        *d = *d ^ *s;
-    }
+    *dest ^= &tmp;
 }
 
 macro_rules! p {
