@@ -11,22 +11,22 @@ macro_rules! per_kib {
     (u64x2) => { ARGON2_BLOCK_BYTES / 16 };
 }
 
-pub type Block = [u64x2; per_kib!(u64x2)];
+pub struct Block([u64x2; per_kib!(u64x2)]);
 
-pub fn zero() -> Block { [u64x2(0, 0); per_kib!(u64x2)] }
+pub fn zero() -> Block { Block([u64x2(0, 0); per_kib!(u64x2)]) }
 
 pub fn as_u8_mut(b: &mut Block) -> &mut [u8] {
-    let rv: &mut [u8; per_kib!(u8)] = unsafe { mem::transmute(b) };
+    let rv: &mut [u8; per_kib!(u8)] = unsafe { mem::transmute(b.0) };
     rv
 }
 
 pub fn as_u8(b: &Block) -> &[u8] {
-    let rv: &[u8; per_kib!(u8)] = unsafe { mem::transmute(b) };
+    let rv: &[u8; per_kib!(u8)] = unsafe { mem::transmute(b.0) };
     rv
 }
 
 pub fn as_u64(b: &Block) -> &[u64] {
-    let rv: &[u64; per_kib!(u64)] = unsafe { mem::transmute(b) };
+    let rv: &[u64; per_kib!(u64)] = unsafe { mem::transmute(b.0) };
     rv
 }
 
