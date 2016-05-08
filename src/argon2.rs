@@ -416,7 +416,7 @@ fn g(dest: &mut Block, lhs: &Block, rhs: &Block) {
 /// ``` g2 y = let g' y = g 0 y in g' . g' ```
 /// Used for data-independent index generation.
 fn g_two(dest: &mut Block, src: &Block) {
-    *dest = *src;
+    *dest = src.clone();
 
     for row in 0..8 {
         p_row(row, dest);
@@ -429,7 +429,7 @@ fn g_two(dest: &mut Block, src: &Block) {
         *d = *d ^ *s;
     }
 
-    let tmp: Block = *dest;
+    let tmp: Block = dest.clone();
 
     for row in 0..8 {
         p_row(row, dest);
